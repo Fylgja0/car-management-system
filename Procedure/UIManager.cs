@@ -5,9 +5,9 @@ using CarProject_OOP.Interface;
 namespace CarProject_OOP.Procedure
 {
     // Class responsible for displaying the user interface and handling user interactions related to car management
-    internal class UIManager
+    internal static class UIManager
     {
-        internal void DisplayMenu()
+        internal static void DisplayMenu()
         {
             Console.Clear();
             Console.WriteLine("Welcome to the Car Management System!");
@@ -22,7 +22,7 @@ namespace CarProject_OOP.Procedure
             Console.Write("\nYour choice: ");
         }
 
-        internal void ShowGasolineBrands(List<GasolineCar> gasolineCars)
+        internal static void ShowGasolineBrands(List<GasolineCar> gasolineCars)
         {
             Console.Clear();
             Console.WriteLine("Gasoline Car Brands:");
@@ -36,7 +36,7 @@ namespace CarProject_OOP.Procedure
             Console.WriteLine("0. Back to Main Menu");
         }
 
-        internal void ShowGasolineModels(List<GasolineCar> models)
+        internal static void ShowGasolineModels(List<GasolineCar> models)
         {
             Console.Clear();
             Console.WriteLine($"{models[0].Brand} - Models:");
@@ -50,7 +50,7 @@ namespace CarProject_OOP.Procedure
             Console.WriteLine("0. Back to Brand Selection");
         }
 
-        internal void ShowElectricBrands(List<ElectricCar> electricCars)
+        internal static void ShowElectricBrands(List<ElectricCar> electricCars)
         {
             Console.Clear();
             Console.WriteLine("Electric Car Brands:");
@@ -64,7 +64,7 @@ namespace CarProject_OOP.Procedure
             Console.WriteLine("0. Back to Main Menu");
         }
 
-        internal void ShowElectricModels(List<ElectricCar> models)
+        internal static void ShowElectricModels(List<ElectricCar> models)
         {
             Console.Clear();
             Console.WriteLine($"{models[0].Brand} - Models");
@@ -78,7 +78,7 @@ namespace CarProject_OOP.Procedure
             Console.WriteLine("0. Back to Brand Selection");
         }
 
-        internal void ShowHybridBrands(List<HybridCar> hybridCars)
+        internal static void ShowHybridBrands(List<HybridCar> hybridCars)
         {
             Console.Clear();
             Console.WriteLine("Hybrid Car Brands:");
@@ -92,7 +92,7 @@ namespace CarProject_OOP.Procedure
             Console.WriteLine("0. Back to Main Menu");
         }
 
-        internal void ShowHybridModels(List<HybridCar> models)
+        internal static void ShowHybridModels(List<HybridCar> models)
         {
             Console.Clear();
             Console.WriteLine($"{models[0].Brand} - Models");
@@ -106,7 +106,7 @@ namespace CarProject_OOP.Procedure
             Console.WriteLine("0. Back to Brand Selection");
         }
 
-        internal void ShowCarDetails(Car car)
+        internal static void ShowCarDetails(Car car)
         {
             Console.Clear();
             Console.WriteLine("Car Details:");
@@ -130,7 +130,7 @@ namespace CarProject_OOP.Procedure
         }
 
         // Displays the menu for adding a new car and prompts the user to select the type of car they want to add
-        internal void ShowAddCarMenu()
+        internal static void ShowAddCarMenu()
         {
             Console.Clear();
             Console.WriteLine("=== Add New Car ===");
@@ -142,7 +142,7 @@ namespace CarProject_OOP.Procedure
             Console.Write("\nYour choice: ");
         }
 
-        internal void ShowAddedCarSuccessMessage(string carType)
+        internal static void ShowAddedCarSuccessMessage(string carType)
         {
             Console.WriteLine($"\n{carType} added successfully!");
             Console.Write("\nPress any key to continue...");
@@ -150,7 +150,7 @@ namespace CarProject_OOP.Procedure
         }
 
         // Displays the menu for removing a car and prompts the user to select the type of car they want to remove
-        internal void ShowRemoveCarMenu()
+        internal static void ShowRemoveCarMenu()
         {
             Console.Clear();
             Console.WriteLine("=== Remove Car ===");
@@ -162,7 +162,7 @@ namespace CarProject_OOP.Procedure
             Console.Write("\nYour choice: ");
         }
 
-        internal void ShowRemovedCarSuccessMessage(string carType)
+        internal static void ShowRemovedCarSuccessMessage(string carType)
         {
             Console.WriteLine($"\n{carType} removed successfully!");
             Console.Write("\nPress any key to continue...");
@@ -170,7 +170,7 @@ namespace CarProject_OOP.Procedure
         }
 
         // Displays the menu for updating a car's price and prompts the user to select the type of car they want to update
-        internal void ShowUpdatePriceMenu()
+        internal static void ShowUpdatePriceMenu()
         {
             Console.Clear();
             Console.WriteLine("=== Update Car Price ===");
@@ -182,14 +182,14 @@ namespace CarProject_OOP.Procedure
             Console.Write("\nYour choice: ");
         }
 
-        internal void ShowUpdatedPriceSuccessMessage(string carType)
+        internal static void ShowUpdatedPriceSuccessMessage(string carType)
         {
             Console.WriteLine($"\n{carType} price updated successfully!");
             Console.Write("\nPress any key to continue...");
             Console.ReadKey();
         }
 
-        internal void ShowInvalidChoiceMessage()
+        internal static void ShowInvalidChoiceMessage()
         {
             Console.WriteLine("Invalid choice! Please try again.");
             Thread.Sleep(1500);

@@ -7,14 +7,12 @@ namespace CarProject_OOP.Procedure
     // Class responsible for managing the user experience, including displaying menus and handling user input
     internal class UXManager
     {
-        private readonly UIManager _uiManager;
         private readonly GasolineCarLists _gasolineCarLists;
         private readonly ElectricCarLists _electricCarLists;
         private readonly HybridCarLists _hybridCarLists;
 
         public UXManager()
         {
-            _uiManager = new();
             _gasolineCarLists = new();
             _electricCarLists = new();
             _hybridCarLists = new();
@@ -25,13 +23,13 @@ namespace CarProject_OOP.Procedure
             bool exit = false;
             while (!exit)
             {
-                _uiManager.DisplayMenu();
+                UIManager.DisplayMenu();
                 string? choice = Console.ReadLine();
 
                 switch (choice)
                 {
                     case "1":
-                        GasolinCarMenu();
+                        GasolineCarMenu();
                         break;
 
                     case "2":
@@ -61,16 +59,16 @@ namespace CarProject_OOP.Procedure
                         break;
 
                     default:
-                        _uiManager.ShowInvalidChoiceMessage();
+                        UIManager.ShowInvalidChoiceMessage();
                         break;
                 }
             }
         }
 
-        private void GasolinCarMenu()
+        private void GasolineCarMenu()
         {
             // Show list of gasoline car brands
-            _uiManager.ShowGasolineBrands(_gasolineCarLists.gasolineCars);
+            UIManager.ShowGasolineBrands(_gasolineCarLists.gasolineCars);
 
             // Get user selection for brand
             int brandIndex = GetUserSelection(_gasolineCarLists.gasolineCars.Count, "brand");
@@ -81,7 +79,7 @@ namespace CarProject_OOP.Procedure
                 .ToList();
 
             // Show models of the selected brand
-            _uiManager.ShowGasolineModels(selectBrandCars);
+            UIManager.ShowGasolineModels(selectBrandCars);
 
             // Get user selection for model
             int modelIndex = GetUserSelection(selectBrandCars.Count, "model");
@@ -89,13 +87,13 @@ namespace CarProject_OOP.Procedure
 
             // Show details of the selected car
             var selectedCar = selectBrandCars[modelIndex];
-            _uiManager.ShowCarDetails(selectedCar);
+            UIManager.ShowCarDetails(selectedCar);
         }
 
         private void ElectricCarMenu()
         {
             // Show list of electric car brands
-            _uiManager.ShowElectricBrands(_electricCarLists.electricCars);
+            UIManager.ShowElectricBrands(_electricCarLists.electricCars);
 
             // Get user selection for brand
             int brandIndex = GetUserSelection(_electricCarLists.electricCars.Count, "brand");
@@ -106,7 +104,7 @@ namespace CarProject_OOP.Procedure
                 .ToList();
 
             // Show models of the selected brand
-            _uiManager.ShowElectricModels(selectBrandCars);
+            UIManager.ShowElectricModels(selectBrandCars);
 
             // Get user selection for model
             int modelIndex = GetUserSelection(selectBrandCars.Count, "model");
@@ -114,13 +112,13 @@ namespace CarProject_OOP.Procedure
 
             // Show details of the selected car
             var selectedCar = selectBrandCars[modelIndex];
-            _uiManager.ShowCarDetails(selectedCar);
+            UIManager.ShowCarDetails(selectedCar);
         }
 
         private void HybridCarMenu()
         {
             // Show list of hybrid car brands
-            _uiManager.ShowHybridBrands(_hybridCarLists.hybridCars);
+            UIManager.ShowHybridBrands(_hybridCarLists.hybridCars);
 
             // Get user selection for brand
             int brandIndex = GetUserSelection(_hybridCarLists.hybridCars.Count, "brand");
@@ -131,7 +129,7 @@ namespace CarProject_OOP.Procedure
                 .ToList();
 
             // Show models of the selected brand
-            _uiManager.ShowHybridModels(selectBrandCars);
+            UIManager.ShowHybridModels(selectBrandCars);
 
             // Get user selection for model
             int modelIndex = GetUserSelection(selectBrandCars.Count, "model");
@@ -139,12 +137,12 @@ namespace CarProject_OOP.Procedure
 
             // Show details of the selected car
             var selectedCar = selectBrandCars[modelIndex];
-            _uiManager.ShowCarDetails(selectedCar);
+            UIManager.ShowCarDetails(selectedCar);
         }
 
         private void AddNewCarMenu()
         {
-            _uiManager.ShowAddCarMenu();
+            UIManager.ShowAddCarMenu();
             string? choice = Console.ReadLine();
 
             switch (choice)
@@ -165,7 +163,7 @@ namespace CarProject_OOP.Procedure
                     return; // Go back to main menu
 
                 default:
-                    _uiManager.ShowInvalidChoiceMessage();
+                    UIManager.ShowInvalidChoiceMessage();
                     break;
             }
         }
@@ -184,7 +182,7 @@ namespace CarProject_OOP.Procedure
             Console.Write("Year: ");
             if (!int.TryParse(Console.ReadLine(), out int year))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
@@ -192,35 +190,35 @@ namespace CarProject_OOP.Procedure
             int currentYear = DateTime.Now.Year;
             if (year < 1886 || year > currentYear + 1)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Price: ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal price))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             // Check for negative values or zero
             if (price <= 0)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Color: ");
             if (!Enum.TryParse(Console.ReadLine(), true, out CarColor color))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Fuel Capacity (L): ");
             if (!float.TryParse(Console.ReadLine(), out float fuelCapacity))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
@@ -228,7 +226,7 @@ namespace CarProject_OOP.Procedure
             GasolineCar newCar = new(year, brand!, color, model!, price, fuelCapacity);
             _gasolineCarLists.gasolineCars.Add(newCar);
 
-            _uiManager.ShowAddedCarSuccessMessage("Gasoline Car");
+            UIManager.ShowAddedCarSuccessMessage("Gasoline Car");
         }
 
         private void AddElectricCar()
@@ -245,7 +243,7 @@ namespace CarProject_OOP.Procedure
             Console.Write("Year: ");
             if (!int.TryParse(Console.ReadLine(), out int year))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
@@ -253,35 +251,35 @@ namespace CarProject_OOP.Procedure
             int currentYear = DateTime.Now.Year;
             if (year < 1886 || year > currentYear + 1)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Price: ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal price))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             // Check for negative values or zero
             if (price <= 0)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Color: ");
             if (!Enum.TryParse(Console.ReadLine(), true, out CarColor color))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Battery Capacity (kWh): ");
             if (!float.TryParse(Console.ReadLine(), out float batteryCapacity))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
@@ -289,7 +287,7 @@ namespace CarProject_OOP.Procedure
             ElectricCar newCar = new(year, brand!, color, model!, price, batteryCapacity);
             _electricCarLists.electricCars.Add(newCar);
 
-            _uiManager.ShowAddedCarSuccessMessage("Electric Car");
+            UIManager.ShowAddedCarSuccessMessage("Electric Car");
         }
 
         private void AddHybridCar()
@@ -306,7 +304,7 @@ namespace CarProject_OOP.Procedure
             Console.Write("Year: ");
             if (!int.TryParse(Console.ReadLine(), out int year))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
@@ -314,42 +312,42 @@ namespace CarProject_OOP.Procedure
             int currentYear = DateTime.Now.Year;
             if (year < 1886 || year > currentYear + 1)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Price: ");
             if (!decimal.TryParse(Console.ReadLine(), out decimal price))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             // Check for negative values or zero
             if (price <= 0)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Color: ");
             if (!Enum.TryParse(Console.ReadLine(), true, out CarColor color))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Fuel Capacity (L): ");
             if (!float.TryParse(Console.ReadLine(), out float fuelCapacity))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             Console.Write("Battery Capacity (kWh): ");
             if (!float.TryParse(Console.ReadLine(), out float batteryCapacity))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
@@ -357,12 +355,12 @@ namespace CarProject_OOP.Procedure
             HybridCar newCar = new(year, brand!, color, model!, price, fuelCapacity, batteryCapacity);
             _hybridCarLists.hybridCars.Add(newCar);
 
-            _uiManager.ShowAddedCarSuccessMessage("Hybrid Car");
+            UIManager.ShowAddedCarSuccessMessage("Hybrid Car");
         }
 
         private void RemoveCarMenu()
         {
-            _uiManager.ShowRemoveCarMenu();
+            UIManager.ShowRemoveCarMenu();
             string? choice = Console.ReadLine();
 
             switch (choice)
@@ -379,7 +377,7 @@ namespace CarProject_OOP.Procedure
                 case "0":
                     return; // Go back to main menu
                 default:
-                    _uiManager.ShowInvalidChoiceMessage();
+                    UIManager.ShowInvalidChoiceMessage();
                     break;
             }
         }
@@ -422,7 +420,7 @@ namespace CarProject_OOP.Procedure
             var carToRemove = models[modelChoice - 1];
             _gasolineCarLists.gasolineCars.Remove(carToRemove);
 
-            _uiManager.ShowRemovedCarSuccessMessage("Gasoline Car");
+            UIManager.ShowRemovedCarSuccessMessage("Gasoline Car");
         }
 
         private void RemoveElectricCar()
@@ -463,7 +461,7 @@ namespace CarProject_OOP.Procedure
             var carToRemove = models[modelChoice - 1];
             _electricCarLists.electricCars.Remove(carToRemove);
 
-            _uiManager.ShowRemovedCarSuccessMessage("Electric Car");
+            UIManager.ShowRemovedCarSuccessMessage("Electric Car");
         }
 
         private void RemoveHybridCar()
@@ -504,12 +502,12 @@ namespace CarProject_OOP.Procedure
             var carToRemove = models[modelChoice - 1];
             _hybridCarLists.hybridCars.Remove(carToRemove);
 
-            _uiManager.ShowRemovedCarSuccessMessage("Hybrid Car");
+            UIManager.ShowRemovedCarSuccessMessage("Hybrid Car");
         }
 
         private void UpdateCarPriceMenu()
         {
-            _uiManager.ShowUpdatePriceMenu();
+            UIManager.ShowUpdatePriceMenu();
             string? choice = Console.ReadLine();
 
             switch (choice)
@@ -526,7 +524,7 @@ namespace CarProject_OOP.Procedure
                 case "0":
                     return; // Go back to main menu
                 default:
-                    _uiManager.ShowInvalidChoiceMessage();
+                    UIManager.ShowInvalidChoiceMessage();
                     break;
             }
         }
@@ -571,20 +569,20 @@ namespace CarProject_OOP.Procedure
             Console.Write($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
             if (!decimal.TryParse(Console.ReadLine(), out decimal newPrice))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             // Check for negative values or zero
             if (newPrice <= 0)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             carToUpdate.Price = newPrice;
 
-            _uiManager.ShowUpdatedPriceSuccessMessage("Gasoline Car");
+            UIManager.ShowUpdatedPriceSuccessMessage("Gasoline Car");
         }
 
         private void UpdateElectricCarPrice()
@@ -624,23 +622,23 @@ namespace CarProject_OOP.Procedure
             // Update the price of the selected car
             var carToUpdate = models[modelChoice - 1];
 
-            Console.Write("Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
+            Console.Write($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
             if (!decimal.TryParse(Console.ReadLine(), out decimal newPrice))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             // Check for negative values or zero
             if (newPrice <= 0)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             carToUpdate.Price = newPrice;
 
-            _uiManager.ShowUpdatedPriceSuccessMessage("Electric Car");
+            UIManager.ShowUpdatedPriceSuccessMessage("Electric Car");
         }
 
         private void UpdateHybridCarPrice()
@@ -683,20 +681,20 @@ namespace CarProject_OOP.Procedure
             Console.Write($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
             if (!decimal.TryParse(Console.ReadLine(), out decimal newPrice))
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             // Check for negative values or zero
             if (newPrice <= 0)
             {
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
                 return;
             }
 
             carToUpdate.Price = newPrice;
 
-            _uiManager.ShowUpdatedPriceSuccessMessage("Hybrid Car");
+            UIManager.ShowUpdatedPriceSuccessMessage("Hybrid Car");
         }
 
         // Helper method to get user selection and validate it against the number of options available for brands or models. Returns -1 if the user chooses to go back.
@@ -717,7 +715,7 @@ namespace CarProject_OOP.Procedure
                     return selection - 1; // Convert to zero-based index
                 }
 
-                _uiManager.ShowInvalidChoiceMessage();
+                UIManager.ShowInvalidChoiceMessage();
             }
         }
     }
