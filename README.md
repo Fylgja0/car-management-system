@@ -2,101 +2,164 @@
 
 ## 📌 Project Description
 
-The **Car Management System** is a console-based application developed
-using **C# and Object-Oriented Programming (OOP)** principles.\
-This project allows users to manage different types of cars and perform
-basic operations such as adding, listing, and managing car data.
+The **Car Management System** is a console-based application developed with **C#** and **Object-Oriented Programming (OOP)** principles.
 
-The main goal of the project is to practice **OOP concepts, class
-structures, and basic software architecture** in C#.
+The application allows users to manage different types of cars through a simple console interface. Users can view cars, add new cars, remove existing cars, and update car prices.
 
-------------------------------------------------------------------------
+The project was developed as a practical exercise in **OOP, encapsulation, inheritance, interfaces, polymorphism, generics, LINQ, and code organization**.
+
+---
 
 ## 🚀 Features
 
--   Add new cars to the system
--   List available cars
--   Manage different car types (gasoline, electric, hybrid)
--   Simple console-based user interface
--   Modular and organized class structure
+- View available cars by type
+- Add new cars
+  - Gasoline
+  - Electric
+  - Hybrid
+- Remove cars
+- Update car prices
+- Select cars by brand and model
+- Calculate driving range according to car type
+- Console-based input validation
+- Centralized car collection management
 
-------------------------------------------------------------------------
+---
 
-## 🛠️ Technologies Used
+## 🛠️ Technologies & Concepts
 
--   **C#**
--   **.NET**
--   **Object-Oriented Programming (OOP)**
+- **C#**
+- **.NET**
+- **Object-Oriented Programming (OOP)**
+- Classes & Objects
+- Inheritance
+- Encapsulation
+- Interfaces
+- Polymorphism
+- Generics
+- LINQ
+- Collections
+- Separation of responsibilities
 
-Concepts used in this project: - Classes and Objects - Inheritance -
-Encapsulation - Basic data management using collections
+---
 
-------------------------------------------------------------------------
+## 🏗️ Architecture
+
+The project is organized around a small set of responsibilities:
+
+- **`Car`** — Abstract base class containing common car properties and behavior.
+- **`GasolineCar`** — Represents gasoline-powered vehicles and implements `IFuel`.
+- **`ElectricCar`** — Represents electric vehicles and implements `IElectric`.
+- **`HybridCar`** — Represents hybrid vehicles and implements both `IFuel` and `IElectric`.
+- **`CarCollection`** — Centralizes car storage and provides operations for retrieving, adding, and removing cars.
+- **`UIManager`** — Handles console UI, input, and output.
+- **`UXManager`** — Controls application flow and coordinates user actions.
+- **`Program`** — Application entry point.
+
+This structure keeps the console UI separate from the car models and collection management.
+
+---
 
 ## 📂 Project Structure
 
-    CarProject_OOP
-    │
-    ├── Base
-    │   └── Base car class
-    │
-    ├── Concrete
-    │   └── Specific car types
-    │
-    ├── Interface
-    │   └── IElectric, IFuel
-    │
-    ├── Enums
-    │   └── Car colors
-    │
-    ├── CarLists
-    │   └── Car collections
-    │
-    ├── Procedure
-    │   └── User interface and system operations
-    │
-    └── Program.cs
+```text
+CarProject_OOP
+│
+├── Base
+│   └── Car.cs
+│
+├── Concrete
+│   ├── GasolineCar.cs
+│   ├── ElectricCar.cs
+│   └── HybridCar.cs
+│
+├── Data
+│   └── CarCollection.cs
+│
+├── Interface
+│   ├── IElectric.cs
+│   └── IFuel.cs
+│
+├── Enums
+│   └── CarColor.cs
+│
+├── Procedure
+│   ├── UIManager.cs
+│   └── UXManager.cs
+│
+└── Program.cs
+```
 
-------------------------------------------------------------------------
+---
 
 ## ▶️ How to Run
 
-1.  Clone the repository
+### Prerequisites
+
+- .NET SDK
+- Visual Studio or another C#/.NET compatible IDE
+
+### Run the project
+
+Clone the repository:
 
 ```bash
-    git clone https://github.com/Fylgja0/Car-Management-System.git
+git clone https://github.com/Fylgja0/car-management-system.git
 ```
 
-2.  Open the project in **Visual Studio**
+Navigate to the project directory and run:
 
-3.  Build and run the project
+```bash
+dotnet run
+```
 
-4.  Use the console menu to interact with the system.
+Alternatively, open the project in **Visual Studio**, build it, and run the application.
 
-------------------------------------------------------------------------
+---
+
+## 🎮 Usage
+
+When the application starts, the console menu allows you to:
+
+1. View gasoline cars
+2. View electric cars
+3. View hybrid cars
+4. Add a new car
+5. Remove a car
+6. Update a car's price
+7. Exit the application
+
+When adding, removing, or updating a car, the application guides the user through the required selections.
+
+---
 
 ## 🎯 Purpose of the Project
 
-This project was developed as a **learning exercise** to improve skills
-in:
+This project is primarily a **learning and portfolio project** created to strengthen practical C# skills.
 
--   C# programming
--   Object-Oriented Programming
--   Code organization
--   Basic project structure
+The main focus areas are:
 
-------------------------------------------------------------------------
+- Applying OOP principles in a complete application
+- Practicing inheritance, interfaces, and polymorphism
+- Improving encapsulation and separation of responsibilities
+- Working with collections and LINQ
+- Refactoring existing code to improve structure and maintainability
 
-## 📌 Future Improvements
+---
 
-Possible improvements for the project:
+## 🔮 Future Improvements
 
--   Adding database integration (SQL Server)
--   Sorting Options (by price, year, or range)
--   Adding search and filtering features
--   Implementing a layered architecture
+Possible future improvements include:
 
-------------------------------------------------------------------------
+- Unit testing
+- Database integration with SQL Server
+- Persistent data storage
+- Search and filtering
+- Sorting by price, year, or range
+- More advanced validation
+- A backend/API version of the application
+
+---
 
 ## 👨‍💻 Author
 

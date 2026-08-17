@@ -9,7 +9,7 @@ namespace CarProject_OOP.Base
         public string Model { get; init; }
         public CarColor CarColor { get; init; }
         public string Brand { get; init; }
-        public decimal Price { get; set; }
+        public decimal Price { get; private set; }
 
         protected Car(int year, string brand, CarColor carColor, string model, decimal price)
         {
@@ -18,6 +18,11 @@ namespace CarProject_OOP.Base
             CarColor = carColor;
             Model = model;
             Price = price;
+        }
+
+        internal void UpdatePrice(decimal newPrice)
+        {
+            Price = newPrice;
         }
 
         internal abstract double CalculateRange();

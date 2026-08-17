@@ -1,21 +1,18 @@
-﻿using CarProject_OOP.CarLists;
-using CarProject_OOP.Enums;
+﻿using CarProject_OOP.Base;
+using CarProject_OOP.Data;
 using CarProject_OOP.Concrete;
+using CarProject_OOP.Enums;
 
 namespace CarProject_OOP.Procedure
 {
     // Class responsible for managing the user experience, including displaying menus and handling user input
     internal class UXManager
     {
-        private readonly GasolineCarLists _gasolineCarLists;
-        private readonly ElectricCarLists _electricCarLists;
-        private readonly HybridCarLists _hybridCarLists;
+        private readonly CarCollection _carCollection;
 
         public UXManager()
         {
-            _gasolineCarLists = new();
-            _electricCarLists = new();
-            _hybridCarLists = new();
+            _carCollection = new();
         }
 
         internal void Run()
@@ -29,33 +26,39 @@ namespace CarProject_OOP.Procedure
                 switch (choice)
                 {
                     case "1":
-                        GasolineCarMenu();
+                        ShowCarMenu<GasolineCar>("Gasoline Car");
                         break;
 
                     case "2":
-                        ElectricCarMenu();
+                        ShowCarMenu<ElectricCar>("Electric Car");
                         break;
 
                     case "3":
-                        HybridCarMenu();
+                        ShowCarMenu<HybridCar>("Hybrid Car");
                         break;
 
                     case "4":
-                        AddNewCarMenu();
+                        ExecuteCarTypeAction("add", AddGasolineCar, AddElectricCar, AddHybridCar);
                         break;
 
                     case "5":
-                        RemoveCarMenu();
+                        ExecuteCarTypeAction("remove",
+                            () => RemoveCar<GasolineCar>("Gasoline Car"),
+                            () => RemoveCar<ElectricCar>("Electric Car"),
+                            () => RemoveCar<HybridCar>("Hybrid Car"));
                         break;
 
                     case "6":
-                        UpdateCarPriceMenu();
+                        ExecuteCarTypeAction("update price for",
+                            () => UpdateCarPrice<GasolineCar>("Gasoline Car"),
+                            () => UpdateCarPrice<ElectricCar>("Electric Car"),
+                            () => UpdateCarPrice<HybridCar>("Hybrid Car"));
                         break;
 
                     case "7":
                         exit = true;
-                        Console.Write("Thank you for using the Car Management System. Goodbye!");
-                        Thread.Sleep(2000); // Pause for 2 seconds before closing
+                        Console.WriteLine("Thank you for using the Car Management System. Goodbye!");
+                        Thread.Sleep(1500);
                         break;
 
                     default:
@@ -65,658 +68,107 @@ namespace CarProject_OOP.Procedure
             }
         }
 
-        private void GasolineCarMenu()
+        // Menu router
+
+        private static void ExecuteCarTypeAction(string actionType, Action gasolineAction, Action electricAction, Action hybridAction)
         {
-            // Show list of gasoline car brands
-            UIManager.ShowGasolineBrands(_gasolineCarLists.gasolineCars);
-
-            // Get user selection for brand
-            int brandIndex = GetUserSelection(_gasolineCarLists.gasolineCars.Count, "brand");
-            if (brandIndex == -1) return; // User chose to go back
-
-            var selectBrandCars = _gasolineCarLists.gasolineCars
-                .Where(car => car.Brand == _gasolineCarLists.gasolineCars[brandIndex].Brand)
-                .ToList();
-
-            // Show models of the selected brand
-            UIManager.ShowGasolineModels(selectBrandCars);
-
-            // Get user selection for model
-            int modelIndex = GetUserSelection(selectBrandCars.Count, "model");
-            if (modelIndex == -1) return; // User chose to go back
-
-            // Show details of the selected car
-            var selectedCar = selectBrandCars[modelIndex];
-            UIManager.ShowCarDetails(selectedCar);
-        }
-
-        private void ElectricCarMenu()
-        {
-            // Show list of electric car brands
-            UIManager.ShowElectricBrands(_electricCarLists.electricCars);
-
-            // Get user selection for brand
-            int brandIndex = GetUserSelection(_electricCarLists.electricCars.Count, "brand");
-            if (brandIndex == -1) return; // User chose to go back
-
-            var selectBrandCars = _electricCarLists.electricCars
-                .Where(car => car.Brand == _electricCarLists.electricCars[brandIndex].Brand)
-                .ToList();
-
-            // Show models of the selected brand
-            UIManager.ShowElectricModels(selectBrandCars);
-
-            // Get user selection for model
-            int modelIndex = GetUserSelection(selectBrandCars.Count, "model");
-            if (modelIndex == -1) return; // User chose to go back
-
-            // Show details of the selected car
-            var selectedCar = selectBrandCars[modelIndex];
-            UIManager.ShowCarDetails(selectedCar);
-        }
-
-        private void HybridCarMenu()
-        {
-            // Show list of hybrid car brands
-            UIManager.ShowHybridBrands(_hybridCarLists.hybridCars);
-
-            // Get user selection for brand
-            int brandIndex = GetUserSelection(_hybridCarLists.hybridCars.Count, "brand");
-            if (brandIndex == -1) return; // User chose to go back
-
-            var selectBrandCars = _hybridCarLists.hybridCars
-                .Where(car => car.Brand == _hybridCarLists.hybridCars[brandIndex].Brand)
-                .ToList();
-
-            // Show models of the selected brand
-            UIManager.ShowHybridModels(selectBrandCars);
-
-            // Get user selection for model
-            int modelIndex = GetUserSelection(selectBrandCars.Count, "model");
-            if (modelIndex == -1) return; // User chose to go back
-
-            // Show details of the selected car
-            var selectedCar = selectBrandCars[modelIndex];
-            UIManager.ShowCarDetails(selectedCar);
-        }
-
-        private void AddNewCarMenu()
-        {
-            UIManager.ShowAddCarMenu();
+            UIManager.ShowCarTypeSelectionMenu(actionType);
             string? choice = Console.ReadLine();
-
             switch (choice)
             {
-                case "1":
-                    AddGasolineCar();
-                    break;
-
-                case "2":
-                    AddElectricCar();
-                    break;
-
-                case "3":
-                    AddHybridCar();
-                    break;
-
-                case "0":
-                    return; // Go back to main menu
-
-                default:
-                    UIManager.ShowInvalidChoiceMessage();
-                    break;
+                case "1": gasolineAction(); break;
+                case "2": electricAction(); break;
+                case "3": hybridAction(); break;
+                case "0": break;
+                default: UIManager.ShowInvalidChoiceMessage(); break;
             }
         }
 
-        private void AddGasolineCar()
+        // Selection & core actions
+
+        private void ShowCarMenu<T>(string carType) where T : Car
         {
-            Console.Clear();
-            Console.WriteLine("=== Add New Gasoline Car ===\n");
-
-            Console.Write("Brand: ");
-            string? brand = Console.ReadLine();
-
-            Console.Write("Model: ");
-            string? model = Console.ReadLine();
-
-            Console.Write("Year: ");
-            if (!int.TryParse(Console.ReadLine(), out int year))
+            var cars = _carCollection.GetCars<T>();
+            var selectedCar = SelectCar(cars, $"Select {carType}");
+            if (selectedCar is not null)
             {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
+                UIManager.ShowCarDetails(selectedCar);
             }
-
-            // Check for valid years (first production car ~1886). Disallow unrealistic future years beyond next year.
-            int currentYear = DateTime.Now.Year;
-            if (year < 1886 || year > currentYear + 1)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            Console.Write("Price: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal price))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Check for negative values or zero
-            if (price <= 0)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            Console.Write("Color: ");
-            if (!Enum.TryParse(Console.ReadLine(), true, out CarColor color))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            Console.Write("Fuel Capacity (L): ");
-            if (!float.TryParse(Console.ReadLine(), out float fuelCapacity))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Create new GasolineCar object and add it to the list
-            GasolineCar newCar = new(year, brand!, color, model!, price, fuelCapacity);
-            _gasolineCarLists.gasolineCars.Add(newCar);
-
-            UIManager.ShowAddedCarSuccessMessage("Gasoline Car");
         }
 
-        private void AddElectricCar()
+        private static T? SelectCar<T>(List<T> cars, string actionType) where T : Car
         {
-            Console.Clear();
-            Console.WriteLine("=== Add New Electric Car ===\n");
-
-            Console.Write("Brand: ");
-            string? brand = Console.ReadLine();
-
-            Console.Write("Model: ");
-            string? model = Console.ReadLine();
-
-            Console.Write("Year: ");
-            if (!int.TryParse(Console.ReadLine(), out int year))
+            if (cars is null or { Count: 0 })
             {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
+                Console.WriteLine($"=== {actionType} ===");
+                Console.WriteLine("No cars available.");
+                Console.WriteLine("Press any key to continue...");
+                Console.ReadKey();
+                return null;
             }
 
-            // Check for valid years (first production car ~1886). Disallow unrealistic future years beyond next year.
-            int currentYear = DateTime.Now.Year;
-            if (year < 1886 || year > currentYear + 1)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
+            UIManager.ShowCarBrands(cars, actionType);
+            var brands = cars.Select(car => car.Brand).Distinct().ToList();
 
-            Console.Write("Price: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal price))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
+            int brandIndex = UIManager.GetUserSelection(brands.Count, "brand");
+            if (brandIndex == -1) return null;
 
-            // Check for negative values or zero
-            if (price <= 0)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
+            string selectedBrand = brands[brandIndex];
+            var models = cars.Where(car => car.Brand == selectedBrand).ToList();
 
-            Console.Write("Color: ");
-            if (!Enum.TryParse(Console.ReadLine(), true, out CarColor color))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
+            UIManager.ShowCarModels(models);
+            int modelIndex = UIManager.GetUserSelection(models.Count, "model");
+            if (modelIndex == -1) return null;
 
-            Console.Write("Battery Capacity (kWh): ");
-            if (!float.TryParse(Console.ReadLine(), out float batteryCapacity))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Create new ElectricCar object and add it to the list
-            ElectricCar newCar = new(year, brand!, color, model!, price, batteryCapacity);
-            _electricCarLists.electricCars.Add(newCar);
-
-            UIManager.ShowAddedCarSuccessMessage("Electric Car");
+            return models[modelIndex];
         }
 
-        private void AddHybridCar()
+        private void RemoveCar<T>(string carType) where T : Car
         {
-            Console.Clear();
-            Console.WriteLine("=== Add New Hybrid Car ===\n");
+            var cars = _carCollection.GetCars<T>();
+            var carToRemove = SelectCar(cars, $"Remove {carType}");
+            if (carToRemove is null) return;
 
-            Console.Write("Brand: ");
-            string? brand = Console.ReadLine();
+            _carCollection.RemoveCar(carToRemove);
 
-            Console.Write("Model: ");
-            string? model = Console.ReadLine();
-
-            Console.Write("Year: ");
-            if (!int.TryParse(Console.ReadLine(), out int year))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Check for valid years (first production car ~1886). Disallow unrealistic future years beyond next year.
-            int currentYear = DateTime.Now.Year;
-            if (year < 1886 || year > currentYear + 1)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            Console.Write("Price: ");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal price))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Check for negative values or zero
-            if (price <= 0)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            Console.Write("Color: ");
-            if (!Enum.TryParse(Console.ReadLine(), true, out CarColor color))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            Console.Write("Fuel Capacity (L): ");
-            if (!float.TryParse(Console.ReadLine(), out float fuelCapacity))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            Console.Write("Battery Capacity (kWh): ");
-            if (!float.TryParse(Console.ReadLine(), out float batteryCapacity))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Create new HybridCar object and add it to the list
-            HybridCar newCar = new(year, brand!, color, model!, price, fuelCapacity, batteryCapacity);
-            _hybridCarLists.hybridCars.Add(newCar);
-
-            UIManager.ShowAddedCarSuccessMessage("Hybrid Car");
+            UIManager.ShowSuccessMessage(carType, "removed");
         }
 
-        private void RemoveCarMenu()
+        private void UpdateCarPrice<T>(string carType) where T : Car
         {
-            UIManager.ShowRemoveCarMenu();
-            string? choice = Console.ReadLine();
+            var cars = _carCollection.GetCars<T>();
+            var carToUpdate = SelectCar(cars, $"Update {carType} Price");
+            if (carToUpdate is null) return;
 
-            switch (choice)
-            {
-                case "1":
-                    RemoveGasolineCar();
-                    break;
-                case "2":
-                    RemoveElectricCar();
-                    break;
-                case "3":
-                    RemoveHybridCar();
-                    break;
-                case "0":
-                    return; // Go back to main menu
-                default:
-                    UIManager.ShowInvalidChoiceMessage();
-                    break;
-            }
+            decimal newPrice = UIManager.ReadPositiveDecimal($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
+            carToUpdate.UpdatePrice(newPrice);
+
+            UIManager.ShowSuccessMessage(carType, "price updated");
         }
 
-        private void RemoveGasolineCar()
+        // Add car actions
+
+        private void AddCar<T>(string headerTitle, string carType, Func<(string brand, string model, int year, decimal price, CarColor color), T> createCar) where T : Car
         {
-            Console.Clear();
-            Console.WriteLine("=== Remove Gasoline Car ===\n");
+            Console.WriteLine($"\n=== {headerTitle} ===");
+            var baseDetails = UIManager.ReadBaseCarDetails();
 
-            // Show list of gasoline car brands
-            var brands = _gasolineCarLists.gasolineCars.Select(car => car.Brand).Distinct().ToList();
-            for (int i = 0; i < brands.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {brands[i]}");
-            }
+            T newCar = createCar(baseDetails);
+            _carCollection.AddCar(newCar);
 
-            Console.Write("Select a brand (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int brandChoice) || brandChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            string? selectedBrand = brands[brandChoice - 1];
-
-            // Show models of the selected brand
-            var models = _gasolineCarLists.gasolineCars.Where(c => c.Brand == selectedBrand).ToList();
-            for (int i = 0; i < models.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {models[i].Model} ({models[i].Year})");
-            }
-
-            // Get user selection for model to remove
-            Console.Write("Select a model to remove (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int modelChoice) || modelChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            // Remove the selected car from the list
-            var carToRemove = models[modelChoice - 1];
-            _gasolineCarLists.gasolineCars.Remove(carToRemove);
-
-            UIManager.ShowRemovedCarSuccessMessage("Gasoline Car");
+            UIManager.ShowSuccessMessage(carType, "added");
         }
 
-        private void RemoveElectricCar()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Remove Electric Car ===\n");
+        private void AddGasolineCar() =>
+            AddCar("Add New Gasoline Car", "Gasoline Car",
+                b => new GasolineCar(b.year, b.brand, b.color, b.model, b.price, UIManager.ReadPositiveFloat("Fuel Capacity (L): ")));
 
-            // Show list of electric car brands
-            var brands = _electricCarLists.electricCars.Select(car => car.Brand).Distinct().ToList();
-            for (int i = 0; i < brands.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {brands[i]}");
-            }
+        private void AddElectricCar() =>
+            AddCar("Add New Electric Car", "Electric Car",
+                b => new ElectricCar(b.year, b.brand, b.color, b.model, b.price, UIManager.ReadPositiveFloat("Battery Capacity (kWh): ")));
 
-            Console.Write("Select a brand (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int brandChoice) || brandChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            string? selectedBrand = brands[brandChoice - 1];
-
-            // Show models of the selected brand
-            var models = _electricCarLists.electricCars.Where(c => c.Brand == selectedBrand).ToList();
-            for (int i = 0; i < models.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {models[i].Model} ({models[i].Year})");
-            }
-
-            // Get user selection for model to remove
-            Console.Write("Select a model to remove (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int modelChoice) || modelChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            // Remove the selected car from the list
-            var carToRemove = models[modelChoice - 1];
-            _electricCarLists.electricCars.Remove(carToRemove);
-
-            UIManager.ShowRemovedCarSuccessMessage("Electric Car");
-        }
-
-        private void RemoveHybridCar()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Remove Hybrid Car ===\n");
-
-            // Show list of hybrid car brands
-            var brands = _hybridCarLists.hybridCars.Select(car => car.Brand).Distinct().ToList();
-            for (int i = 0; i < brands.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {brands[i]}");
-            }
-
-            Console.Write("Select a brand (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int brandChoice) || brandChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            string? selectedBrand = brands[brandChoice - 1];
-
-            // Show models of the selected brand
-            var models = _hybridCarLists.hybridCars.Where(c => c.Brand == selectedBrand).ToList();
-            for (int i = 0; i < models.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {models[i].Model} ({models[i].Year})");
-            }
-
-            // Get user selection for model to remove
-            Console.Write("Select a model to remove (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int modelChoice) || modelChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            // Remove the selected car from the list
-            var carToRemove = models[modelChoice - 1];
-            _hybridCarLists.hybridCars.Remove(carToRemove);
-
-            UIManager.ShowRemovedCarSuccessMessage("Hybrid Car");
-        }
-
-        private void UpdateCarPriceMenu()
-        {
-            UIManager.ShowUpdatePriceMenu();
-            string? choice = Console.ReadLine();
-
-            switch (choice)
-            {
-                case "1":
-                    UpdateGasolineCarPrice();
-                    break;
-                case "2":
-                    UpdateElectricCarPrice();
-                    break;
-                case "3":
-                    UpdateHybridCarPrice();
-                    break;
-                case "0":
-                    return; // Go back to main menu
-                default:
-                    UIManager.ShowInvalidChoiceMessage();
-                    break;
-            }
-        }
-
-        private void UpdateGasolineCarPrice()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Update Gasoline Car Price ===");
-
-            // Show list of gasoline car brands
-            var brands = _gasolineCarLists.gasolineCars.Select(car => car.Brand).Distinct().ToList();
-            for (int i = 0; i < brands.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {brands[i]}");
-            }
-
-            Console.Write("Select a brand (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int brandChoice) || brandChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            string? selectedBrand = brands[brandChoice - 1];
-
-            // Show models of the selected brand
-            var models = _gasolineCarLists.gasolineCars.Where(c => c.Brand == selectedBrand).ToList();
-            for (int i = 0; i < models.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {models[i].Model} ({models[i].Year}) - Current Price: {models[i].Price:C}");
-            }
-
-            // Get user selection for model to update
-            Console.Write("Select a model to update price (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int modelChoice) || modelChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            // Update the price of the selected car
-            var carToUpdate = models[modelChoice - 1];
-
-            Console.Write($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal newPrice))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Check for negative values or zero
-            if (newPrice <= 0)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            carToUpdate.Price = newPrice;
-
-            UIManager.ShowUpdatedPriceSuccessMessage("Gasoline Car");
-        }
-
-        private void UpdateElectricCarPrice()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Update Electric Car Price ===");
-
-            // Show list of electric car brands
-            var brands = _electricCarLists.electricCars.Select(car => car.Brand).Distinct().ToList();
-            for (int i = 0; i < brands.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {brands[i]}");
-            }
-
-            Console.Write("Select a brand (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int brandChoice) || brandChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            string? selectedBrand = brands[brandChoice - 1];
-
-            // Show models of the selected brand
-            var models = _electricCarLists.electricCars.Where(c => c.Brand == selectedBrand).ToList();
-            for (int i = 0; i < models.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {models[i].Model} ({models[i].Year}) - Current Price: {models[i].Price:C}");
-            }
-
-            // Get user selection for model to update
-            Console.Write("Select a model to update price (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int modelChoice) || modelChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            // Update the price of the selected car
-            var carToUpdate = models[modelChoice - 1];
-
-            Console.Write($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal newPrice))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Check for negative values or zero
-            if (newPrice <= 0)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            carToUpdate.Price = newPrice;
-
-            UIManager.ShowUpdatedPriceSuccessMessage("Electric Car");
-        }
-
-        private void UpdateHybridCarPrice()
-        {
-            Console.Clear();
-            Console.WriteLine("=== Update Hybrid Car Price ===");
-
-            // Show list of hybrid car brands
-            var brands = _hybridCarLists.hybridCars.Select(car => car.Brand).Distinct().ToList();
-            for (int i = 0; i < brands.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {brands[i]}");
-            }
-
-            Console.Write("Select a brand (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int brandChoice) || brandChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            string? selectedBrand = brands[brandChoice - 1];
-
-            // Show models of the selected brand
-            var models = _hybridCarLists.hybridCars.Where(c => c.Brand == selectedBrand).ToList();
-            for (int i = 0; i < models.Count; i++)
-            {
-                Console.WriteLine($"{i + 1}. {models[i].Model} ({models[i].Year}) - Current Price: {models[i].Price:C}");
-            }
-
-            // Get user selection for model to update
-            Console.Write("Select a model to update price (0: Cancel): ");
-            if (!int.TryParse(Console.ReadLine(), out int modelChoice) || modelChoice == 0)
-            {
-                return; // User chose to cancel or entered invalid input
-            }
-
-            // Update the price of the selected car
-            var carToUpdate = models[modelChoice - 1];
-
-            Console.Write($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
-            if (!decimal.TryParse(Console.ReadLine(), out decimal newPrice))
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            // Check for negative values or zero
-            if (newPrice <= 0)
-            {
-                UIManager.ShowInvalidChoiceMessage();
-                return;
-            }
-
-            carToUpdate.Price = newPrice;
-
-            UIManager.ShowUpdatedPriceSuccessMessage("Hybrid Car");
-        }
-
-        // Helper method to get user selection and validate it against the number of options available for brands or models. Returns -1 if the user chooses to go back.
-        private int GetUserSelection(int maxOptions, string selectionType)
-        {
-            while (true)
-            {
-                Console.Write($"Please select a {selectionType} number: ");
-                string? input = Console.ReadLine();
-
-                if (input == "0")
-                {
-                    return -1; // Indicates user wants to go back
-                }
-
-                if (int.TryParse(input, out int selection) && selection > 0 && selection <= maxOptions)
-                {
-                    return selection - 1; // Convert to zero-based index
-                }
-
-                UIManager.ShowInvalidChoiceMessage();
-            }
-        }
+        private void AddHybridCar() =>
+            AddCar("Add New Hybrid Car", "Hybrid Car",
+                b => new HybridCar(b.year, b.brand, b.color, b.model, b.price, UIManager.ReadPositiveFloat("Fuel Capacity (L): "), UIManager.ReadPositiveFloat("Battery Capacity (kWh): ")));
     }
 }
