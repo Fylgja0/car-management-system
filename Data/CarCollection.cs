@@ -7,25 +7,44 @@ namespace CarProject_OOP.Data
     // Manages a collection of cars, providing methods for adding, removing, and retrieving cars.
     internal class CarCollection
     {
-        private readonly List<Car> _cars;
+        private readonly CarManagementDbContext _context;
 
         public CarCollection()
         {
-            _cars = SeedInitialData();
+            _context = new CarManagementDbContext();
+
+            if (!_context.Cars.Any())
+            {
+                SeedInitialData();
+            }
         }
 
         internal List<T> GetCars<T>() where T : Car
         {
-            return _cars.OfType<T>().ToList();
+            return _context.Set<T>().ToList();
         }
 
-        internal void AddCar(Car car) => _cars.Add(car);
-
-        internal bool RemoveCar(Car car) => _cars.Remove(car);
-
-        private static List<Car> SeedInitialData()
+        internal void AddCar(Car car)
         {
-            return new List<Car>
+            _context.Set<Car>().Add(car);
+            _context.SaveChanges();
+        }
+
+        internal bool RemoveCar(Car car)
+        {
+            _context.Set<Car>().Remove(car);
+            return _context.SaveChanges() > 0;
+        }
+
+        internal void UpdateCarPrice(Car car, decimal newPrice)
+        {
+            car.UpdatePrice(newPrice);
+            _context.SaveChanges();
+        }
+
+        private void SeedInitialData()
+        {
+            var cars = new List<Car>
             {
                 // Gasoline Cars
                 new GasolineCar(2021, "Honda", CarColor.Gray, "Civic", 22999.99m, 50),
@@ -42,6 +61,9 @@ namespace CarProject_OOP.Data
                 new HybridCar(2022, "Honda", CarColor.Gray, "Accord Hybrid", 27999.99m, 45, 35),
                 new HybridCar(2021, "Ford", CarColor.Black, "Escape Hybrid", 31999.99m, 60, 45)
             };
+
+            _context.AddRange(cars);
+            _context.SaveChanges();
         }
     }
 }

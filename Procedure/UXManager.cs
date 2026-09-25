@@ -141,7 +141,7 @@ namespace CarProject_OOP.Procedure
             if (carToUpdate is null) return;
 
             decimal newPrice = UIManager.ReadPositiveDecimal($"Enter new price for {carToUpdate.Brand} {carToUpdate.Model}: $");
-            carToUpdate.UpdatePrice(newPrice);
+            _carCollection.UpdateCarPrice(carToUpdate, newPrice);
 
             UIManager.ShowSuccessMessage(carType, "price updated");
         }

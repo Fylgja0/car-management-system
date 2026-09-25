@@ -5,7 +5,7 @@ using CarProject_OOP.Interface;
 namespace CarProject_OOP.Concrete
 {
     // Concrete class for electric cars
-    internal class ElectricCar : Car, IElectric
+    public class ElectricCar : Car, IElectric
     {
         public float BatteryCapacity { get; init; }
 

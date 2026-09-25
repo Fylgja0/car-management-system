@@ -5,7 +5,7 @@ using CarProject_OOP.Interface;
 namespace CarProject_OOP.Concrete
 {
     // Concrete class for gasoline cars
-    internal class GasolineCar : Car, IFuel
+    public class GasolineCar : Car, IFuel
     {
         public float FuelCapacity { get; init; }
 

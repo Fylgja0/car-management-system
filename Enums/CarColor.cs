@@ -1,6 +1,6 @@
 ﻿namespace CarProject_OOP.Enums
 {
-    internal enum CarColor
+    public enum CarColor
     {
         Red,
         Green,

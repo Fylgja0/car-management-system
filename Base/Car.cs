@@ -3,8 +3,9 @@
 namespace CarProject_OOP.Base
 {
     // Base class for all car types
-    internal abstract class Car
+    public abstract class Car
     {
+        public int ID { get; private set; }
         public int Year { get; init; }
         public string Model { get; init; }
         public CarColor CarColor { get; init; }

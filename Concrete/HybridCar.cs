@@ -5,7 +5,7 @@ using CarProject_OOP.Interface;
 namespace CarProject_OOP.Concrete
 {
     // Concrete class for hybrid cars
-    internal class HybridCar : Car, IFuel, IElectric
+    public class HybridCar : Car, IFuel, IElectric
     {
         public float FuelCapacity { get; init; }
         public float BatteryCapacity { get; init; }
